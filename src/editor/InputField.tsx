@@ -33,7 +33,7 @@ export const InputField: FC<InputFieldProps> = ({ focus, onChange, onClick, onKe
         selectAll();
       }
     }
-  }, [value]);
+  }, [focus, value]);
 
   return (
     <div

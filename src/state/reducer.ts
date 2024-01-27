@@ -54,6 +54,10 @@ export const reducer = produce((state: State, action: Action) => {
       };
       break;
 
+    case ActionType.SetEditing:
+      state.editing = action.editing;
+      break;
+
     case ActionType.UpdateCurrentPair:
       assertSelection(state);
       const pair = currentPair(state)!;

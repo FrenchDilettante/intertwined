@@ -11,11 +11,15 @@ export interface EditorProps {
 export const Editor: FC<EditorProps> = ({ document }) => {
   const ctx = useReducer(reducer, {
     document,
+    editing: "from",
     selectedPair: null,
   });
   const [state, dispatch] = ctx;
 
-  const selectPair = (rowId: number, pairId: number) => dispatch({ type: ActionType.SelectPair, pairId, rowId });
+  const selectPair = (rowId: number, pairId: number, editing: "from" | "to") => {
+    dispatch({ type: ActionType.SelectPair, pairId, rowId });
+    dispatch({ type: ActionType.SetEditing, editing });
+  };
 
   return (
     <div>
@@ -31,12 +35,13 @@ export const Editor: FC<EditorProps> = ({ document }) => {
                   id={getPairId(rowId, pairId)}
                   key={`pair-${pairId}`}
                   className={`text-center ${selected && "bg-neutral-50"} hover:bg-neutral-100 cursor-pointer`}
-                  onClick={() => selectPair(rowId, pairId)}
                 >
-                  <div className={"from"} style={{ marginBottom: 2 }}>
+                  <div className={"from"} style={{ marginBottom: 2 }} onClick={() => selectPair(rowId, pairId, "from")}>
                     {pair.from || "–"}
                   </div>
-                  <div className={"to text-sm"}>{pair.to || "–"}</div>
+                  <div className={"to text-sm"} onClick={() => selectPair(rowId, pairId, "to")}>
+                    {pair.to || "–"}
+                  </div>
                 </div>
               );
             })}

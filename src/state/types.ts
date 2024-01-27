@@ -18,6 +18,7 @@ export interface Selection {
 }
 
 export interface State {
+  editing: "from" | "to";
   document: Document;
   selectedPair: Selection | null;
 }
@@ -29,6 +30,7 @@ export enum ActionType {
   NextPair,
   Return,
   SelectPair,
+  SetEditing,
   UpdateCurrentPair,
 }
 
@@ -39,4 +41,5 @@ export type Action =
   | { type: ActionType.NextPair }
   | { type: ActionType.Return }
   | { type: ActionType.SelectPair; rowId: number; pairId: number }
+  | { type: ActionType.SetEditing; editing: "from" | "to" }
   | { type: ActionType.UpdateCurrentPair; from: string; to: string };

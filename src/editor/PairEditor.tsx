@@ -1,4 +1,4 @@
-import { FC, KeyboardEventHandler, useEffect, useReducer, useRef, useState } from "react";
+import { FC, KeyboardEventHandler, useEffect, useReducer, useRef } from "react";
 import { useEditor } from "./hooks";
 import { InputField } from "./InputField";
 import { getPairId } from "./utils";
@@ -10,9 +10,8 @@ const PADDING_Y = 4;
 
 export interface PairEditorProps {}
 
-export const PairEditor: FC<PairEditorProps> = ({}) => {
+export const PairEditor: FC<PairEditorProps> = () => {
   const [state, dispatch] = useEditor();
-  const [editing, setEditing] = useState<"from" | "to">("from");
   const [, forceUpdate] = useReducer((x) => x + 1, 0);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -22,8 +21,8 @@ export const PairEditor: FC<PairEditorProps> = ({}) => {
         dispatch({ type: ActionType.ClearSelection });
       }
     };
-    document.addEventListener("mousedown", handleEvent);
-    return () => document.removeEventListener("mousedown", handleEvent);
+    document.addEventListener("mouseup", handleEvent);
+    return () => document.removeEventListener("mouseup", handleEvent);
   });
 
   assertSelection(state);
@@ -37,7 +36,7 @@ export const PairEditor: FC<PairEditorProps> = ({}) => {
     switch (event.code) {
       case "ArrowDown":
         event.preventDefault();
-        setEditing("to");
+        dispatch({ type: ActionType.SetEditing, editing: "to" });
         break;
 
       case "ArrowLeft":
@@ -55,7 +54,7 @@ export const PairEditor: FC<PairEditorProps> = ({}) => {
 
       case "ArrowUp":
         event.preventDefault();
-        setEditing("from");
+        dispatch({ type: ActionType.SetEditing, editing: "from" });
         break;
 
       case "Enter":
@@ -121,18 +120,18 @@ export const PairEditor: FC<PairEditorProps> = ({}) => {
         <div>
           <InputField
             value={pair.from}
-            focus={editing === "from"}
+            focus={state.editing === "from"}
             onChange={updateFrom}
-            onClick={() => setEditing("from")}
+            onClick={() => dispatch({ type: ActionType.SetEditing, editing: "from" })}
             onKeyDown={onKeyDown}
           />
         </div>
         <div className={"text-sm"}>
           <InputField
             value={pair.to}
-            focus={editing === "to"}
+            focus={state.editing === "to"}
             onChange={updateTo}
-            onClick={() => setEditing("to")}
+            onClick={() => dispatch({ type: ActionType.SetEditing, editing: "to" })}
             onKeyDown={onKeyDown}
           />
         </div>
